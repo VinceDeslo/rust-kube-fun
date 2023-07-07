@@ -5,8 +5,8 @@ use kube::{
 };
 use tracing::info;
 
-pub async fn print_pods(client: Client) -> Result<(), Box<dyn std::error::Error>> {
-    let pods: Api<Pod> = Api::default_namespaced(client);
+pub async fn print_pods(client: &Client) -> Result<(), Box<dyn std::error::Error>> {
+    let pods: Api<Pod> = Api::default_namespaced(client.clone());
 
     let list_params = ListParams::default();
 
@@ -20,15 +20,11 @@ pub async fn print_pods(client: Client) -> Result<(), Box<dyn std::error::Error>
     }
     pods_list.into_iter().for_each(|pod| {
         match pod.metadata.name {
-            Some(name) => {
-                info!("Found pod: {}", name);
-            }
+            Some(name) => info!("Found pod: {}", name),
             None => (),
         }
         match pod.metadata.uid {
-            Some(uid) => {
-                info!("Pod UID: {}", uid);
-            }
+            Some(uid) => info!("Pod UID: {}", uid),
             None => (),
         }
     });
