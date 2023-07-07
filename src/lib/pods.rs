@@ -5,25 +5,31 @@ use kube::{
 };
 use tracing::info;
 
-pub async fn list_pods(client: Client) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn print_pods(client: Client) -> Result<(), Box<dyn std::error::Error>> {
     let pods: Api<Pod> = Api::default_namespaced(client);
 
     let list_params = ListParams::default();
 
     let pods_list = pods.list(&list_params).await?;
 
+    let pod_count = pods_list.items.len();
+
+    info!("Pod count: {}", pod_count);
+    if pod_count <= 0 {
+        return Ok(());
+    }
     pods_list.into_iter().for_each(|pod| {
         match pod.metadata.name {
             Some(name) => {
                 info!("Found pod: {}", name);
             }
-            None => info!("Failed to find pod name."),
+            None => (),
         }
         match pod.metadata.uid {
             Some(uid) => {
-                info!("Pod UID: {:#?}", uid);
+                info!("Pod UID: {}", uid);
             }
-            None => info!("Failed to find pod uid."),
+            None => (),
         }
     });
 
