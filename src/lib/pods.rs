@@ -1,9 +1,18 @@
+use axum::response::{IntoResponse, Json};
 use k8s_openapi::api::core::v1::Pod;
 use kube::{
     api::{Api, ListParams},
     Client,
 };
 use tracing::info;
+
+pub async fn list_pods() -> impl IntoResponse {
+    Json("Pod Resource List")
+}
+
+pub async fn get_pod_resource() -> impl IntoResponse {
+    Json("Pod Resource")
+}
 
 pub async fn print_pods(client: &Client) -> Result<(), Box<dyn std::error::Error>> {
     let pods: Api<Pod> = Api::default_namespaced(client.clone());

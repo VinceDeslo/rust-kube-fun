@@ -1,9 +1,18 @@
+use axum::response::{IntoResponse, Json};
 use k8s_openapi::api::core::v1::Service;
 use kube::{
     api::{Api, ListParams},
     Client,
 };
 use tracing::info;
+
+pub async fn list_services() -> impl IntoResponse {
+    Json("Service Resource List")
+}
+
+pub async fn get_service_resource() -> impl IntoResponse {
+    Json("Service Resource")
+}
 
 pub async fn print_services(client: &Client) -> Result<(), Box<dyn std::error::Error>> {
     let services: Api<Service> = Api::default_namespaced(client.clone());
